@@ -1,0 +1,16 @@
+.gradle/
+build/
+out/
+bin/
+.idea/
+.vscode/
+.DS_Store
+*.iml
+*.log
+*.db
+*.sqlite
+*.sqlite3
+*.jar
+!.mvn/wrapper/maven-wrapper.jar
+!gradle/wrapper/gradle-wrapper.jar
+

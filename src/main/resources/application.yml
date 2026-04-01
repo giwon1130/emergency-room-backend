@@ -1,0 +1,41 @@
+spring:
+  application:
+    name: emergency-room-backend
+  profiles:
+    active: local
+  datasource:
+    url: jdbc:postgresql://localhost:35434/emergency_room
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.spatial.dialect.postgis.PostgisPG95Dialect
+        format_sql: true
+    show-sql: false
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+  data:
+    redis:
+      host: localhost
+      port: 6381
+      timeout: 3s
+
+emergency:
+  api:
+    base-url: ${EMERGENCY_API_BASE_URL:}
+    service-key: ${EMERGENCY_API_SERVICE_KEY:}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+
+server:
+  port: 8082
