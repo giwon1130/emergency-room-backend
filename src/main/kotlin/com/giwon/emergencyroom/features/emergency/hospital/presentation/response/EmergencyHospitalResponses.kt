@@ -34,7 +34,11 @@ data class EmergencyHospitalDetailResponse(
     val emergencyPhone: String?,
     val availableBeds: Int,
     val emergencyStatus: String,
+    val emergencyStatusLabel: String,
     val lastUpdated: LocalDateTime?,
+    val updatedRecently: Boolean,
+    val hasLocation: Boolean,
+    val contactAvailable: Boolean,
     val latitude: Double?,
     val longitude: Double?
 )

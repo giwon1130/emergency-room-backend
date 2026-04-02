@@ -13,6 +13,7 @@ import org.locationtech.jts.geom.GeometryFactory
 import org.locationtech.jts.geom.PrecisionModel
 import org.springframework.stereotype.Service
 import java.sql.Timestamp
+import java.time.Duration
 import java.time.LocalDateTime
 
 @Service
@@ -36,7 +37,11 @@ class EmergencyHospitalService(
             emergencyPhone = hospital.emergencyPhone,
             availableBeds = status?.availableBeds ?: 0,
             emergencyStatus = status?.emergencyStatus ?: "UNKNOWN",
+            emergencyStatusLabel = toStatusLabel(status?.emergencyStatus ?: "UNKNOWN"),
             lastUpdated = status?.lastUpdated,
+            updatedRecently = status?.lastUpdated?.let { Duration.between(it, LocalDateTime.now()).toHours() < 6 } ?: false,
+            hasLocation = hospital.latitude != null && hospital.longitude != null,
+            contactAvailable = !hospital.phone.isNullOrBlank() || !hospital.emergencyPhone.isNullOrBlank(),
             latitude = hospital.latitude,
             longitude = hospital.longitude
         )
@@ -117,4 +122,11 @@ class EmergencyHospitalService(
             emergencyPhone = hospital.emergencyPhone
         )
     }
+
+    private fun toStatusLabel(status: String): String =
+        when (status) {
+            "GREEN" -> "가용"
+            "RED" -> "혼잡"
+            else -> "미확인"
+        }
 }
