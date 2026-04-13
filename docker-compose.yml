@@ -1,4 +1,30 @@
 services:
+  emergency-room-api:
+    build:
+      context: .
+    container_name: emergency-room-api
+    restart: unless-stopped
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/emergency_room
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: 6379
+      SERVER_PORT: 8082
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:8082/actuator/health | grep 'UP' >/dev/null || exit 1"]
+      interval: 15s
+      timeout: 8s
+      retries: 10
+      start_period: 30s
+    ports:
+      - "8082:8082"
+
   db:
     image: postgis/postgis:16-3.4
     restart: always
@@ -10,6 +36,12 @@ services:
       - "35434:5432"
     volumes:
       - emergency_room_pg:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d emergency_room"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
 
   redis:
     image: redis:7-alpine
@@ -19,4 +51,3 @@ services:
 
 volumes:
   emergency_room_pg:
-

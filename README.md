@@ -48,6 +48,20 @@
 3. `export EMERGENCY_API_SERVICE_KEY=...`
 4. `./gradlew bootRun`
 
+## Docker
+`docker-compose.yml`에는 PostGIS, Redis, API 컨테이너를 함께 포함했다.
+
+```bash
+docker compose up --build -d
+```
+
+- API: `http://localhost:8082`
+- health: `http://localhost:8082/actuator/health`
+- PostGIS: `localhost:35434`
+- Redis: `localhost:6381`
+- API 컨테이너는 compose 내부에서 `db`, `redis`를 바라보도록 환경변수를 덮어쓴다.
+- 컨테이너 이미지에는 healthcheck용 `wget`을 포함했다.
+
 ## 현재 상태
 - 공공 API 연동 클라이언트 연결 완료
 - 공공 API 페이지네이션 및 JSON 응답 처리 반영
